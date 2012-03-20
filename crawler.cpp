@@ -1,5 +1,7 @@
-#include <iostream>
 #include "Crawler.h"
+#include <iostream>
+
+using namespace std;
 
 multimap<string,string> unvisited_url;
 

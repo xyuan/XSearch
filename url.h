@@ -1,9 +1,8 @@
 #ifndef _URL_H
 #define _URL_H
+
 #include <string>
-
 using namespace std;
-
 
 enum url_scheme {
     SCHEME_HTTP,
@@ -21,8 +20,8 @@ const char * LEAD_FTP = "ftp://";
 class Url
 {
 public:
-    Url();
-    ~Url();
+    Url() {};
+    ~Url() {};
 
     bool parse_url ( string url );
 private:
