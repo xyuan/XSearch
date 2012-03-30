@@ -1,4 +1,4 @@
-#include "url.cpp"
+#include "url.h"
 
 using namespace std;
 
@@ -6,6 +6,6 @@ using namespace std;
 int main()
 {
     Url url;
-    url.parse_url("http://www.baidu.com");
+    //url.parse_url("http://www.baidu.com");
     return 0;
 }

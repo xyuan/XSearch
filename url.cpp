@@ -1,7 +1,5 @@
 #include "url.h"
 
-using namespace std;
-
 bool Url::parse_url(string url)
 {
     char protocol[10]; //协议
@@ -16,10 +14,10 @@ bool Url::parse_url(string url)
 
 void Url::parse_scheme( const char * url ) {
     //比较url的头部是否是htpp开头或者ftp开头
-    if ( strncasecmp ( url, LEAD_HTTP, strlen(LEAD_HTTP) ) == 0 ) {
+    if ( strncasecmp ( url, HEAD_HTTP, strlen(HEAD_HTTP) ) == 0 ) {
         this->m_scheme = SCHEME_HTTP;
     }
-    else if ( strncasecmp ( url, LEAD_FTP, strlen(LEAD_HTTP) ) == 0 ) {
+    else if ( strncasecmp ( url, HEAD_FTP, strlen(HEAD_HTTP) ) == 0 ) {
         this->m_scheme = SCHEME_INVALID;
     }
     this->m_scheme = SCHEME_INVALID;

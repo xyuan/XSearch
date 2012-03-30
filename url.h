@@ -2,8 +2,8 @@
 #define _URL_H
 
 #include <string>
-using namespace std;
 
+using namespace std;
 enum url_scheme {
     SCHEME_HTTP,
     SCHEME_FTP,
@@ -14,8 +14,8 @@ const unsigned int URL_LEN = 256;
 const unsigned int HOST_LEN = 256;
 const int DEFAULT_HTTP_PORT = 80;
 const int DEFAULT_FTP_PORT = 21;
-const char * LEAD_HTTP = "http://";
-const char * LEAD_FTP = "ftp://";
+const char* HEAD_HTTP = "http://";
+const char* HEAD_FTP = "ftp://";
 
 class Url
 {
@@ -26,6 +26,7 @@ public:
     bool parse_url ( string url );
 private:
     void parse_scheme ( const char * url );
+
 private:
     enum url_scheme m_scheme;
     string m_url;
