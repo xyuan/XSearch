@@ -6,6 +6,6 @@ using namespace std;
 int main()
 {
     Url url;
-    //url.parse_url("http://www.baidu.com");
+    url.parse_url("http://www.peopledaily.com.cn/GB/news/index.html");
     return 0;
 }
