@@ -2,9 +2,7 @@
 #define _URL_H
 
 #include <string>
-
 using namespace std;
-
 
 enum url_scheme {
     SCHEME_HTTP,
