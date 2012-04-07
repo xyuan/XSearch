@@ -19,7 +19,7 @@ public:
 	//public functions
 	StringFunction();
 	virtual ~StringFunction();
-    static void upperToLower ( string & str );
+	static void upperToLower ( string & str );
 	static string numToString ( long long i );
 	static string::size_type findPostion(string source, string target, int posFrom = NULL );
 
