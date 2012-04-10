@@ -7,9 +7,9 @@ using namespace std;
 //main function
 int main()
 {
-    //Url url;
-    //url.parse_url("http://www.peopledaily.com.cn/GB/news/index.html");
-    //char * result = url.getIpByHost("127.0.0.1");
+    Url url;
+    url.parse_url("http://www.peopledaily.com.cn/GB/news/index.html");
+    char * result = url.getIpByHost("127.0.0.1");
 	string s = "hello,World, i am xiao中国人ming";
 	StringFunction::upperToLower(s);
 	string number = StringFunction::numToString(1024);
@@ -19,6 +19,7 @@ int main()
 	cout << pos << endl;
 	StringFunction::replaceStr(s,"xiao","zhang");
 	StringFunction::eraseStr(s,"hello");
+	
 	cout << s << endl;
 
     return 0;
