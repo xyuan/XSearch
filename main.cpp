@@ -13,7 +13,7 @@ int main()
 	string s = "hello,World, i am xiao中国人ming";
 	StringFunction::upperToLower(s);
 	string number = StringFunction::numToString(1024);
-    cout << s <<endl;
+        cout << s <<endl;
 	cout << number.length() << endl;
 	string::size_type pos = StringFunction::findPostion("what is your name?","is",6);
 	cout << pos << endl;
