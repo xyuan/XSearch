@@ -6,6 +6,7 @@
 #include <iostream>
 #include <map>
 #include <arpa/inet.h>
+#include "netdb.h"
 
 using namespace std;
 
@@ -36,11 +37,10 @@ Url::~Url() {
      */
 }
 
-bool Url::parse_url(string url) {
+bool Url::parseUrl(string url) {
     /* 
      * Split the url to protocol,host,request and port as member variable
      * Param url: the url string
-     * Return: true or false
      */
     char protocol[10];
     char host[HOST_LEN];
@@ -50,11 +50,11 @@ bool Url::parse_url(string url) {
     memset(protocol,0,sizeof(protocol));
     memset(host,0,sizeof(host));
     memset(request,0,sizeof(request));
-    this->parse_scheme( url.c_str() );
+    this->parseScheme( url.c_str() );
     if ( this->m_scheme != SCHEME_HTTP ) {
             return false;
     }
-    this->parse_url(url.c_str(),
+    this->parseUrl(url.c_str(),
                     protocol,sizeof(protocol),
                     host,sizeof(host),
                     request,sizeof(request),
@@ -62,7 +62,7 @@ bool Url::parse_url(string url) {
     return true;
 }
 
-void Url::parse_url(const char * url,char * protocol,int len_protocol, 
+void Url::parseUrl(const char * url,char * protocol,int len_protocol, 
 		char * host,int len_host, char * request,int len_request, int * port) {
     /*
      * Split the url to protocol,host,request and port and assignmet them
@@ -101,7 +101,7 @@ void Url::parse_url(const char * url,char * protocol,int len_protocol,
             ptr += 2;
     }
     char * ptr_host = ptr;
-    while ( this->is_valid_host_char(*ptr_host) && *ptr_host ) {
+    while ( this->isValidHostChar(*ptr_host) && *ptr_host ) {
             ptr_host++;
     }
     *ptr_host = 0;
@@ -119,7 +119,7 @@ void Url::parse_url(const char * url,char * protocol,int len_protocol,
     work_url = NULL;
 }
 
-bool Url::is_valid_host_char( char ch ){
+bool Url::isValidHostChar( char ch ){
     /*
      * Judge that the char is or not a host's valid char
      * Param ch: an char
@@ -128,7 +128,7 @@ bool Url::is_valid_host_char( char ch ){
     return ( isalpha(ch) || isdigit(ch) || ch == '-' || ch == '.' || ch == ':' || ch == '_' );
 }
 
-void Url::parse_scheme( const char * url ) {
+void Url::parseScheme( const char * url ) {
     /*
      * Judge the url's Head is Http or not
      * Param url: the url string
@@ -159,7 +159,7 @@ bool Url::isValidHost(const char * host) {
     char ch;
     for(unsigned int i=0; i<strlen(host); i++){
         ch = *(host++);
-        if( !is_valid_host_char(ch) ){
+        if( !isValidHostChar(ch) ){
                 return false;
         }
     }
@@ -216,8 +216,8 @@ char * Url::getIpByHost( const char * host ) {
     }
     else {
         pthread_mutex_lock(&mutexCacheHost);
-        if( hostCacheMap.find(host) == mapCacheHostLookup.end() ){
-            hostCacheMap.insert( valTypeCHL ( host, abuf) );
+        if( hostCacheMap.find(host) == hostCacheMap.end() ){
+            hostCacheMap.insert( map<string,string>::value_type(host, abuf));
         }
         pthread_mutex_unlock(&mutexCacheHost);
     }

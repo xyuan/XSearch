@@ -18,21 +18,29 @@ public:
     ~Url();
 
     //public functions
-    bool parse_url ( string url );
+    bool parseUrl ( string url );
     char * getIpByHost ( const char * host );
+    bool isForeignHost ( string host );
+    bool isImageUrl ( string url );
+
+    //the functions to get the member variable
+    string getUrl() { return this->m_url; }
+    string getHost() { return this->m_host; }
+    string getPort() { return this->m_port; }
+    string getPath() { return this->m_path; }
+
 private:
     //private functions
-    void parse_scheme ( const char * url );
-    bool is_valid_host_char( char ch );
-    void parse_url(const char * url,char * protocol,int len_protocol, 
+    void parseScheme ( const char * url );
+    bool isValidHostChar( char ch );
+    void parseUrl(const char * url,char * protocol,int len_protocol, 
                     char * host,int len_host, 
                     char * request,int len_request, 
                     int * port);
     bool isValidHost ( const char * host );
-    bool isForeignHost ( string host );
-    bool isImageUrl ( string url );
     bool isUnVisitedUrl ( const char * url );
     bool isVisitedUrl ( const char * url );
+
 private:
     //member variable
     enum url_scheme m_scheme;

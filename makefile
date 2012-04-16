@@ -1,6 +1,6 @@
 main: main.o url.o stringfun.o
-	g++ -o main main.o url.o
-main.o: main.cpp url.cpp
+	g++ -o main main.o url.o stringfun.o
+main.o: main.cpp url.cpp stringfun.cpp
 	g++ -c main.cpp
 url.o: url.cpp url.h
 	g++ -c url.cpp
