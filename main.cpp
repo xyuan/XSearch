@@ -1,6 +1,7 @@
 #include "url.h"
 #include "stringfun.h"
 #include "searchfile.h"
+#include "page.h"
 
 #include <iostream>
 using namespace std;
@@ -37,13 +38,29 @@ void testUrl () {
 }
 
 void testSearchFile() {
+    /*
+     * the unitest of the class SearchFile
+     */
     SearchFile sf;
+    cout << sf.getFileType() << endl;
+}
+
+void testPage() {
+    /*
+     * the unitest of the class Page
+     */
+    Page page("http://www.baidu.com","","","");
+    page.getStatus("http://www.baidu.com/hello");
+
 }
 
 
 //main function
 int main()
 {
-    testSearchFile();
+    //testUrl();
+    //testStringFunction();
+    //testSearchFile();
+    testPage();
     return 0;
 }

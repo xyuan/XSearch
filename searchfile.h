@@ -9,13 +9,13 @@
 class SearchFile : public FileEngine
 {
 public:
-	SearchFile(string filename);
-	SearchFile();
-	virtual ~SearchFile();
+    SearchFile(string filename);
+    SearchFile();
+    virtual ~SearchFile();
 
-	inline int getFileType() { return XSEARCH; }
+    inline int getFileType() { return XSEARCH; }
 
-	virtual bool write(void *arg);
+    virtual bool write(void *arg);
 };
 
 #endif
