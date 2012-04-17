@@ -1,8 +1,14 @@
-main: main.o url.o stringfun.o
-	g++ -o main main.o url.o stringfun.o
-main.o: main.cpp url.cpp stringfun.cpp
-	g++ -c main.cpp
-url.o: url.cpp url.h
-	g++ -c url.cpp
-stringfun.o: stringfun.cpp stringfun.h
-	g++ -c stringfun.cpp
+main: main.o url.o stringfun.o searchfile.o dataengine.o fileengine.o
+	g++ -o main main.o url.o stringfun.o searchfile.o dataengine.o fileengine.o
+main.o: main.cpp
+	g++ -c $^
+url.o: url.cpp
+	g++ -c $^
+stringfun.o: stringfun.cpp
+	g++ -c $^
+dataengine.o: dataengine.cpp
+	g++ -c $^
+fileengine.o: fileengine.cpp
+	g++ -c $^
+searchfile.o: searchfile.cpp
+	g++ -c $^

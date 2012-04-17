@@ -26,7 +26,7 @@ public:
     //the functions to get the member variable
     string getUrl() { return this->m_url; }
     string getHost() { return this->m_host; }
-    string getPort() { return this->m_port; }
+    int getPort() { return this->m_port; }
     string getPath() { return this->m_path; }
 
 private:
@@ -46,7 +46,7 @@ private:
     enum url_scheme m_scheme;
     string m_url;
     string m_host;
-    string m_port;
+    int m_port;
     string m_path;
 };
 

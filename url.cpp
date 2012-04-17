@@ -59,6 +59,12 @@ bool Url::parseUrl(string url) {
                     host,sizeof(host),
                     request,sizeof(request),
                     &port);
+    this->m_url = url;
+    this->m_host = host;
+    this->m_path = request;
+    if ( port > 0 ) { 
+        this->m_port = port;
+    }
     return true;
 }
 

@@ -1,16 +1,14 @@
 #include "url.h"
 #include "stringfun.h"
+#include "searchfile.h"
 
 #include <iostream>
 using namespace std;
 
-//main function
-int main()
-{
+void testStringFunction () {
     /*
      * the unitest of the class StringFunction
      */
-    /*
     string s = "hello,World, i am xiao中国人ming";
     StringFunction::upperToLower(s);
     string number = StringFunction::numToString(1024);
@@ -21,9 +19,9 @@ int main()
     StringFunction::replaceStr(s,"xiao","zhang");
     StringFunction::eraseStr(s,"hello");
     cout << s << endl;
-    */
-    //-----------------------------------------
-	
+}
+
+void testUrl () {
     /*
      * the unitest of the class Url
      */
@@ -36,6 +34,16 @@ int main()
     cout << url.getIpByHost ( url.getHost().c_str() ) << endl;
     cout << url.isImageUrl ( "http://www.peopledaily.com.cn/GB/news/index.html" ) << endl;
     cout << url.isForeignHost ( "http://www.aatv.com" ) << endl;
+}
 
+void testSearchFile() {
+    SearchFile sf;
+}
+
+
+//main function
+int main()
+{
+    testSearchFile();
     return 0;
 }

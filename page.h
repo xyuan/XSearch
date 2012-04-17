@@ -19,6 +19,5 @@ private:
     int m_status;
 
 };
-~Page();
 
 #endif
