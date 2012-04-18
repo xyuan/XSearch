@@ -9,7 +9,7 @@ enum fileengine_type
 {
     ISAM,
     XSEARCH,
-    LINK4SE
+    LINK
 };
 
 class CUrl;

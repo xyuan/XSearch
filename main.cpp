@@ -2,6 +2,8 @@
 #include "stringfun.h"
 #include "searchfile.h"
 #include "page.h"
+#include "linkfile.h"
+#include "crawler.h"
 
 #include <iostream>
 using namespace std;
@@ -44,6 +46,13 @@ void testSearchFile() {
     SearchFile sf;
     cout << sf.getFileType() << endl;
 }
+void testLinkFile() {
+    /*
+     * the unitest of the class SearchFile
+     */
+    LinkFile lf;
+    cout << lf.getFileType() << endl;
+}
 
 void testPage() {
     /*
@@ -58,7 +67,9 @@ int main()
 {
     //testUrl();
     //testStringFunction();
-    testSearchFile();
-    testPage();
+    //testSearchFile();
+    //testPage();
+    //testLinkFile();
+    cout << pthread_self() << endl;
     return 0;
 }

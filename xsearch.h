@@ -8,6 +8,9 @@
 
 using namespace std;
 
+const string DATA_SEARCH_FILE = "XSearch.raw";
+const string DATA_LINK_FILE = "Link.raw";
+
 
 //includes
 #ifndef         _IOSTREAM_

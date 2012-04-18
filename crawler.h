@@ -1,15 +1,18 @@
 #include <iostream>
+#include "searchfile.h"
+#include "linkfile.h"
+#include "url.h"
 using namespace std;
 
 class Crawler
 {
 public:
     Crawler();
-    ~Crawler()
+    ~Crawler();
 
 public:
     void fetch(void * arg);
-    void download();
+    void download ( SearchFile * pSearchFile, LinkFile * pLinkFile, Url & url, int & gSock );
 
 private:
     string seed_file_name;
