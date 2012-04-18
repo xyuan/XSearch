@@ -49,9 +49,7 @@ void testPage() {
     /*
      * the unitest of the class Page
      */
-    Page page("http://www.baidu.com","","","");
-    page.getStatus("http://www.baidu.com/hello");
-
+    Page page();
 }
 
 
@@ -60,7 +58,7 @@ int main()
 {
     //testUrl();
     //testStringFunction();
-    //testSearchFile();
+    testSearchFile();
     testPage();
     return 0;
 }

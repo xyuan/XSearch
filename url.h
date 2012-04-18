@@ -41,7 +41,7 @@ private:
     bool isUnVisitedUrl ( const char * url );
     bool isVisitedUrl ( const char * url );
 
-private:
+public:
     //member variable
     enum url_scheme m_scheme;
     string m_url;

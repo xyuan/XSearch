@@ -27,8 +27,8 @@ bool SearchFile::write(void * arg)
     }
     file_arg *pFile = (file_arg *)arg;
 
-    Url *iUrl = pFile->pUrl;
-    Page *iPage = pFile->pPage;
+    Url * url = pFile->pUrl;
+    Page * page = pFile->pPage;
 
     char strDownloadTime[128];
     time_t tDate;
@@ -36,6 +36,26 @@ bool SearchFile::write(void * arg)
     memset(strDownloadTime, 0, 128);
     time(&tDate);
     strftime(strDownloadTime, 128, "%a, %d %b %Y %H:%M:%S GMT", gmtime(&tDate));
+
+    m_ofs << "version: 1.0\n";
+    if ( page->m_locate.length()==0 ) {
+        m_ofs << "url: " << url->m_url;
+    }
+    else {
+        m_ofs << "url: " << url->m_url;
+        m_ofs << "\norigin: " << page->m_locate;
+    }
+    
+    m_ofs << "\ndate: " << strDownloadTime;
+    if ( hostCacheMap.find(url->m_host) == hostCacheMap.end() ) {
+        m_ofs << "\nip: " << url->m_host;
+    }
+    else {
+        m_ofs << "\nip: " << ( *(hostCacheMap.find(url->m_host))).second;
+    }
+    m_ofs << "\nlength: " << page->m_contentLen + page->m_headerLen + 1 << "\n\n" << page->m_header << "\n";
+    //write path,and len?
+    m_ofs.write( page->m_content.c_str(),page->m_contentLen );
+    m_ofs << endl;
     return true;
 }
-
