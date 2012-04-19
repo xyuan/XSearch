@@ -29,7 +29,7 @@ public:
     int getPort() { return this->m_port; }
     string getPath() { return this->m_path; }
 
-private:
+public:
     //private functions
     void parseScheme ( const char * url );
     bool isValidHostChar( char ch );
