@@ -12,7 +12,9 @@ multimap<string,string> unvisitedUrl;
 pthread_mutex_t collection_mutex;
 
 bool isOver;
+map<unsigned long,unsigned long> mapIpBlock;
 
+vector<string> parsedLinksVec;
 
 void Crawler::download ( SearchFile * pSearchFile, LinkFile * pLinkFile, Url & url, int & gSock ) {
     /*

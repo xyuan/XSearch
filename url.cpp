@@ -16,6 +16,8 @@ const int DEFAULT_HTTP_PORT = 80;
 const int DEFAULT_FTP_PORT = 21;
 const char* HEAD_HTTP = "http://";
 const char* HEAD_FTP = "ftp://";
+extern map<unsigned long,unsigned long> mapIpBlock;
+
 
 map<string,string> hostCacheMap;
 pthread_mutex_t mutexCacheHost = PTHREAD_MUTEX_INITIALIZER;
@@ -305,4 +307,32 @@ bool Url::isImageUrl(string url)
             return true;
     }
     return false;
+}
+
+bool Url::isValidIp ( const char * ip ) {
+    /*
+     * Judge the ip address is or not valid
+     * Param ip: the ip adress str
+     * Return : true or false
+     */
+    if ( ip == NULL ) {
+        return false;
+    }
+    unsigned long inaddr = (unsigned long)inet_addr(ip);
+    if( inaddr == INADDR_NONE ){
+        return false;
+    }
+    if( mapIpBlock.size() > 0 )
+    {
+        map<unsigned long,unsigned long>::iterator pos;
+        for(pos=mapIpBlock.begin(); pos != mapIpBlock.end(); ++pos) {
+            unsigned long ret;
+            ret = inaddr & ~((*pos).second);
+            if( ret == (*pos).first ) {
+                return true;
+            }
+        }
+	return false;
+    }
+    return true;
 }

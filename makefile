@@ -1,5 +1,5 @@
-main: main.o url.o stringfun.o searchfile.o dataengine.o fileengine.o page.o linkfile.o crawler.o
-	g++ -o main main.o url.o stringfun.o searchfile.o dataengine.o fileengine.o page.o linkfile.o crawler.o
+main: main.o url.o stringfun.o searchfile.o dataengine.o fileengine.o page.o linkfile.o crawler.o http.o
+	g++ -o main main.o url.o stringfun.o searchfile.o dataengine.o fileengine.o page.o linkfile.o crawler.o http.o
 main.o: main.cpp
 	g++ -c $^
 url.o: url.cpp
@@ -17,4 +17,6 @@ linkfile.o: linkfile.cpp
 page.o: page.cpp
 	g++ -c $^
 crawler.o: crawler.cpp
+	g++ -c $^
+http.o: http.cpp
 	g++ -c $^

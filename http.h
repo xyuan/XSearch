@@ -11,7 +11,7 @@ class Http
 public:
     Http();
     virtual ~Http();
-    int fetch( string urlString, char **fileBuf, char **fileHead, char**location, int *sock );
+    int fetch( string urlString, char **fileBuf, char **fileHead, char**location, int *psock );
 private:
     int readHeader(int sock, char * header );
     int createSocket ( const char * host, int port);

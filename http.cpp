@@ -2,15 +2,34 @@
 #include "string.h"
 #include "url.h"
 #include "commondef.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <strings.h>
+#include <errno.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <fcntl.h>
+#include "page.h"
+#include <arpa/inet.h>
+#include "netdb.h"
 
+
+
+#include "xsearch.h"
 char *userAgent = NULL;
 int hideUserAgent = 0;
 
+int timeout = DEFAULT_TIMEOUT;
 Http::Http() {}
 Http::~Http() {}
 
 
-int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * psock ) {
+int Http::fetch ( string urlString, char ** fileBuf,char **fileHead, char ** location, int * psock ) {
     /*
      * Downloads the page
      * Param url: the url string
@@ -22,8 +41,14 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
 
     char * url = strdup(urlString.c_str());
     int sock;
+    int port;
+    char * host;
+    char * path;
+    int tempSize;
+    char * temp;
+    int ret = -1;
 
-    if ( url.empty() ) {
+    if ( urlString.empty() ) {
         cout << "url is empty error !" << endl;
         return -1;
     }
@@ -38,16 +63,16 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
         cout << "parse url error! : " << urlString << endl;
         return -1;
     }
-    host = curl.m_host.c_str();
-    path = curl.m_path.c_str();
+    host = (char*)curl.m_host.c_str();
+    path = (char*)curl.m_path.c_str();
     port = curl.m_port;
     if ( !(port > 0) ) {
         port = 80;
     }
     
-    int requestBufferSize = REQUEST_BUF_SIZE
-    char * requestBufferfer = (char*)malloc(requestBufferSize);
-    if ( requestBufferfer == NULL  ) {
+    int requestBufferSize = REQUEST_BUF_SIZE;
+    char * requestBuffer = (char*)malloc(requestBufferSize);
+    if ( requestBuffer == NULL  ) {
         if ( url ) {
             free ( url );
             url = NULL;
@@ -58,15 +83,15 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
     if ( strlen( path ) < 1 ) {
         //it means their's no '/' char in the url ,it is the root url
         int tempSize = strlen("GET /") + strlen(HTTP_VERSION) + 2;
-        if ( checkBufSize(&requestBufferfer, &requestBufferSize, tempSize) || 
-                snprintf( requestBufferfer, requestBufferSize, "GET / %s\r\n",HTTP_VERSION) < 0 ) {
+        if ( checkBufSize(&requestBuffer, &requestBufferSize, tempSize) || 
+                snprintf( requestBuffer, requestBufferSize, "GET / %s\r\n",HTTP_VERSION) < 0 ) {
             if ( url ) {
                 free(url);
                 url = NULL;
             }
-            if ( requestBufferfer ) {
-                free(requestBufferfer);
-                requestBufferfer = NULL;
+            if ( requestBuffer ) {
+                free(requestBuffer);
+                requestBuffer = NULL;
             }
             cout << "1.check buffer size (request buf ) error !" << endl;
             return -1;
@@ -74,96 +99,96 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
     }
     else {
         tempSize = strlen("GET ") + strlen(path) + strlen(HTTP_VERSION) + 4;
-        if ( checkBufSize(&requestBufferfer, &requestBufferSize, tempSize) || 
-                snprintf( requestBufferfer, requestBufferSize, "GET / %s %s\r\n",path,HTTP_VERSION) < 0 ) {
+        if ( checkBufSize(&requestBuffer, &requestBufferSize, tempSize) || 
+                snprintf( requestBuffer, requestBufferSize, "GET / %s %s\r\n",path,HTTP_VERSION) < 0 ) {
             if ( url ) {
                 free(url);
                 url = NULL;
             }
-            if ( requestBufferfer ) {
-                free(requestBufferfer);
-                requestBufferfer = NULL;
+            if ( requestBuffer ) {
+                free(requestBuffer);
+                requestBuffer = NULL;
             }
             cout << "2.check buffer size (request buf ) error !" << endl;
             return -1;
         }
     }
     tempSize = (int)strlen("Host: ") + (int)strlen(host) + 3;
-    if ( checkBufSize(&requestBufferfer, &requestBufferSize, tempSize + 128 )) {
+    if ( checkBufSize(&requestBuffer, &requestBufferSize, tempSize + 128 )) {
         if ( url ) {
             free(url);
             url = NULL;
         }
-        if ( requestBufferfer ) {
-            free(requestBufferfer);
-            requestBufferfer = NULL;
+        if ( requestBuffer ) {
+            free(requestBuffer);
+            requestBuffer = NULL;
         }
         cout << "3.check buffer size (request buf ) error !" << endl;
         return -1;
     }
 
-    strcat(requestBufferfer,"host:");
-    strcat(requestBufferfer,host);
-    strcat(requestBufferfer,"\r\n");
+    strcat(requestBuffer,"host:");
+    strcat(requestBuffer,host);
+    strcat(requestBuffer,"\r\n");
     if ( !hideUserAgent && userAgent == NULL ) {
         tempSize = (int)strlen("User-Agent: ") + 
             (int)strlen(DEFAULT_USER_AGENT ) +
             (int)strlen(VERSION) + 4;
-        if ( checkBufSize(&requestBufferfer, &requestBufferSize, tempSize )) {
+        if ( checkBufSize(&requestBuffer, &requestBufferSize, tempSize )) {
             if ( url ) {
                 free(url);
                 url = NULL;
             }
-            if ( requestBufferfer ) {
-                free(requestBufferfer);
-                requestBufferfer = NULL;
+            if ( requestBuffer ) {
+                free(requestBuffer);
+                requestBuffer = NULL;
             }
             cout << "4.check buffer size (request buf ) error !" << endl;
             return -1;
         }
-        strcat(requestBufferfer, "User-Agent: ");
-        strcat(requestBufferfer, DEFAULT_USER_AGENT);
-        strcat(requestBufferfer, "/");
-        strcat(requestBufferfer, VERSION);
-        strcat(requestBufferfer, "\r\n");
+        strcat(requestBuffer, "User-Agent: ");
+        strcat(requestBuffer, DEFAULT_USER_AGENT);
+        strcat(requestBuffer, "/");
+        strcat(requestBuffer, VERSION);
+        strcat(requestBuffer, "\r\n");
     }
     else if ( !hideUserAgent ) {
         tempSize = (int)strlen("User-Agent: ") + (int)strlen(userAgent) + 3;
-        if ( checkBufSize(&requestBufferfer, &requestBufferSize, tempSize )) {
+        if ( checkBufSize(&requestBuffer, &requestBufferSize, tempSize )) {
             if ( url ) {
                 free(url);
                 url = NULL;
             }
-            if ( requestBufferfer ) {
-                free(requestBufferfer);
-                requestBufferfer = NULL;
+            if ( requestBuffer ) {
+                free(requestBuffer);
+                requestBuffer = NULL;
             }
             cout << "5.check buffer size (request buf ) error !" << endl;
             return -1;
         }
 
-        strcat(requestBufferfer, "User-Agent: ");
-        strcat(requestBufferfer, userAgent);
-        strcat(requestBufferfer, "\r\n");
+        strcat(requestBuffer, "User-Agent: ");
+        strcat(requestBuffer, userAgent);
+        strcat(requestBuffer, "\r\n");
     }
 
     tempSize = (int)strlen("Connection: Keep-Alive\r\n\r\n");
-    if ( checkBufSize(&requestBufferfer, &requestBufferSize, tempSize )) {
+    if ( checkBufSize(&requestBuffer, &requestBufferSize, tempSize )) {
         if ( url ) {
             free(url);
             url = NULL;
         }
-        if ( requestBufferfer ) {
-            free(requestBufferfer);
-            requestBufferfer = NULL;
+        if ( requestBuffer ) {
+            free(requestBuffer);
+            requestBuffer = NULL;
         }
         cout << "6.check buffer size (request buf ) error !" << endl;
         return -1;
     }
-    strcat(requestBufferfer, "Connection: Keep-Alive\r\n\r\n");
+    strcat(requestBuffer, "Connection: Keep-Alive\r\n\r\n");
 
     temp = (char *)realloc(requestBuffer, strlen(requestBuffer) + 1);
-    if(tmp == NULL){
+    if(temp == NULL){
         if (url) {
             free(url); 
             url=NULL;
@@ -176,7 +201,7 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
         cout << "realloc for temp error" << endl;
         return -1;
     }
-    requestBufferfer = temp;
+    requestBuffer = temp;
 
     if ( *psock != -1 ) {
         sock = *psock;
@@ -212,10 +237,10 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
         }
     }
 
-    ret = write ( sock, requestBufferfer, strlen(requestBufferfer) );
+    ret = write ( sock, requestBuffer, strlen(requestBuffer) );
 
     if ( ret == 0 ) {
-        cout << "requestBufferfer is " << requestBuffer << endl;
+        cout << "requestBuffer is " << requestBuffer << endl;
         cout << "write nothing" << endl;
         if (url)
         {
@@ -264,7 +289,7 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
             cout << "4.not able to MakeSocket" << endl;
             return -1;
         }
-        if ( write (sock, requestBufferfer, strlen(requestBufferfer)) == -1 ) {
+        if ( write (sock, requestBuffer, strlen(requestBuffer)) == -1 ) {
             if (url)
             {
                 free(url); 
@@ -307,7 +332,7 @@ int Http::fetch ( string urlString, char ** fileBuf, char ** location, int * pso
         return -1;
     }
     Page page;
-    page.parseHeaderInfo ( headerBuf );
+    page.parseHeader( headerBuf );
 }
 
 int Http::checkBufSize ( char ** buf, int * bufsize, int more ) {
@@ -323,7 +348,7 @@ int Http::checkBufSize ( char ** buf, int * bufsize, int more ) {
         return 0;
     }
     temp = (char *)realloc(*buf, *bufsize + more + 1);
-    if(tmp == NULL) {
+    if(temp == NULL) {
         return -1;
     }
     *buf = temp;
@@ -400,7 +425,7 @@ int Http::nonbConnect(int sock,struct sockaddr* sockAddr,int sec)
      * Param sec: the timout
      * Return: -1 if create error
      */
-    int flags
+    int flags;
     int status;
     fd_set mask;
     struct timeval timeout;
@@ -505,12 +530,12 @@ int Http::readHeader ( int sock, char * header ) {
         }
         else if(*header == '\n') {
             newlines++;
+        }
         else {    
             newlines = 0;
         }
         header++;
     }
-    
     header -= 2;
     *header = '\0';
     return bytesRead;

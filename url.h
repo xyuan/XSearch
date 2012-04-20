@@ -40,6 +40,7 @@ public:
     bool isValidHost ( const char * host );
     bool isUnVisitedUrl ( const char * url );
     bool isVisitedUrl ( const char * url );
+    bool isValidIp ( const char * ip );
 
 public:
     //member variable
